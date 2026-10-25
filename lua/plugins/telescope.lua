@@ -1,35 +1,33 @@
 return {
   {
-    'nvim-telescope/telescope.nvim',
-    version = '*',
+    "nvim-telescope/telescope.nvim",
+    cmd = "Telescope",
     dependencies = {
-      'nvim-lua/plenary.nvim',
-      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        cond = function()
+          return vim.fn.executable("make") == 1
+        end,
+      },
+      "nvim-telescope/telescope-ui-select.nvim",
     },
     config = function()
       local telescope = require("telescope")
-      local builtin = require("telescope.builtin")
-
       telescope.setup({
+        defaults = {
+          prompt_prefix = "  ",
+          selection_caret = " ",
+          path_display = { "smart" },
+        },
         extensions = {
-          ["ui-select"] = {
-            require("telescope.themes").get_dropdown({})
-          }
-        }
+          ["ui-select"] = require("telescope.themes").get_dropdown({}),
+        },
       })
 
-      -- load extension
-      telescope.load_extension("ui-select")
-
-      -- keymaps
-      vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = 'Find files' })
-      vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
-      vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Buffers' })
-      vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Help tags' })
-    end
+      pcall(telescope.load_extension, "fzf")
+      pcall(telescope.load_extension, "ui-select")
+    end,
   },
-
-  {
-    'nvim-telescope/telescope-ui-select.nvim',
-  }
 }

@@ -1,15 +1,39 @@
-return{
-	
-  'nvim-treesitter/nvim-treesitter',
-  lazy = false,
-  build = ':TSUpdate',
-
-  config = function()
-	require('nvim-treesitter').setup {
-  	-- Directory to install parsers and queries to (prepended to `runtimepath` to have priority)
-  	install_dir = vim.fn.stdpath('data') .. '/site'
-	}
-	require('nvim-treesitter').install({ 'rust','typescript','lua', 'javascript', 'zig' }):wait(300000) -- wait max. 5 minutes
-  end
-
+return {
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      ensure_installed = {
+        "bash",
+        "javascript",
+        "json",
+        "lua",
+        "markdown",
+        "markdown_inline",
+        "python",
+        "rust",
+        "tsx",
+        "typescript",
+        "vim",
+        "vimdoc",
+        "yaml",
+      },
+      auto_install = true,
+      highlight = { enable = true },
+      indent = { enable = true },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = "<C-space>",
+          node_incremental = "<C-space>",
+          scope_incremental = "<C-s>",
+          node_decremental = "<M-space>",
+        },
+      },
+    },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
+  },
 }
